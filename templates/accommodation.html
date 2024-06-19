@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %} Accommodation {% endblock title %}
+{% block body %}
+<main class="container-fluid my-4">
+    <div class="row mb-2">
+      {% for accommodation in accommodations %}
+      <div class="col-md-6">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary">{{accommodation.a_name}}</strong>
+            <h6 class="mb-1 text-danger">{{accommodation.a_address}}</h6>
+            <div class="mb-1 text-muted">{{accommodation.a_type}}</div>
+            <p class="card-text mb-auto">{{accommodation.a_fecility}}</p>
+            <p class="card-text mb-auto">{{accommodation.a_rent}}</p>
+            <!-- Button trigger Enquire modal -->
+            <a class="btn btn-md btn-success mr-2"  data-bs-toggle="modal" data-bs-target="#enquireModal">Enquire</a>
+          </div>
+          <div class="col-auto d-none d-lg-block">
+            <img src="{{accommodation.a_photo1}}" class="d-block w-80" width="350" height="300" alt="...">
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+{% endblock body %}

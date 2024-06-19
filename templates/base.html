@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock title %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/home">Student Accommodation</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/home">Home</a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/accommodation">Accommodation</a>
+          </li>
+          {% endif %}
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/about">About Us</a>
+          </li> -->
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact Us</a>
+          </li> -->
+        </ul>
+        {% if user.is_authenticated %}
+        <form method="get" action="/search" class="d-flex" role="search" class="form-inline my-2 my-lg-0 mx-3">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query"
+            id="query">
+          <button class="btn btn-outline-success mr-2 my-sm-0" type="submit">Search</button>
+        </form>
+        {% endif %}
+        <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0">Admin Panel</a>
+      </div>
+      {% if user.is_authenticated %}
+      <ul class="navbar-nav mr-2">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Welcome {{request.user}}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      {% else %}
+      <!-- Button trigger Login modal -->
+      <button type="button" class="btn btn-success m-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+        Login
+      </button>
+      <!-- Button trigger SignUp modal -->
+      <button type="button" class="btn btn-success mr-2" data-bs-toggle="modal" data-bs-target="#signupModal">
+        SignUp
+      </button>
+      {% endif %}
+    </div>
+  </nav>
+
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
+    <strong>{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  <!-- SignUp Modal -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="lsignupModalTitle">Sign Up</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="/signup">
+          <div class="modal-body">
+            <div class="col-md-12">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username !"
+                required>
+            </div>
+            <div class="col-md-12">
+              <label for="fname" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter First Name !" required>
+            </div>
+            <div class="col-md-12">
+              <label for="lname" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Last Name !" required>
+            </div>
+            <div class="col-md-12">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email Address"
+                required>
+            </div>
+            <div class="col-md-12">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password !"
+                required>
+            </div>
+            <div class="col-md-12">
+              <label for="password2" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="password2" name="password2" placeholder="Enter Password !"
+                required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="loginModalTitle">Login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="/login">
+          <div class="modal-body">
+            <div class="col-md-12">
+              <label for="login_username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="login_username" name="login_username"
+                placeholder="Enter Username !" required>
+            </div>
+            <div class="col-md-12">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="login_password" name="login_password"
+                placeholder="Enter Password !" required>
+            </div>
+          </div>
+          {% csrf_token %}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENQUIRE Modal -->
+  <div class="modal fade" id="enquireModal" tabindex="-1" aria-labelledby="enquireModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="lsenquireModalTitle">Enquire</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="/enquire">
+          <div class="modal-body">
+            <div class="col-md-12">
+              <label for="e_phone" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="e_phone" name="e_phone" placeholder="Enter Phone Number !"
+                required>
+            </div>
+            <div class="col-md-12">
+              <label for="e_query" class="form-label">Enter Query</label>
+              <textarea class="form-control" id="e_query" name="e_query" placeholder="Enter Query !" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% block body %}{% endblock body %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>
